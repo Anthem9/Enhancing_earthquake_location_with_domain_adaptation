@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 
 # 读入数据
-data = pd.read_csv('data/data.csv')
+data = pd.read_csv('../data/data.csv')
 
 # 转化角度为弧度
 data['majorAxisPlunge_rad'] = np.deg2rad(data['majorAxisPlunge'])

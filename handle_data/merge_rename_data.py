@@ -4,8 +4,8 @@ if __name__ == "__main__":
 # 读取数据集
     # Read the dataset
     # 读取biased_data.csv和reference_data.csv
-    biased_df = pd.read_csv('data/biased_data.csv')
-    reference_df = pd.read_csv('data/merged_reference_data.csv')
+    biased_df = pd.read_csv('../data/biased_data.csv')
+    reference_df = pd.read_csv('../data/merged_reference_data.csv')
 
     # 使用merge函数，以'Name'列为键进行合并
     data = pd.merge(biased_df, reference_df, on='Name')
