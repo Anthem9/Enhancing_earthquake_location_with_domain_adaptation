@@ -1,0 +1,60 @@
+import pandas as pd
+from io import StringIO
+
+data = """
+GTSRCE  IF10C   LATLON   -12.7945    45.5646     0   -2.71000
+GTSRCE  IF10D   LATLON   -12.7943    45.5637     0   -2.70100
+GTSRCE  IF11C   LATLON   -12.7793    45.5020     0   -2.47500
+GTSRCE  IF11D   LATLON   -12.7787    45.5005     0   -2.47300
+GTSRCE  IF12C   LATLON   -12.6940    45.6097     0   -3.24300
+GTSRCE  IF12D   LATLON   -12.6946    45.6100     0   -3.24400
+GTSRCE  IF13C   LATLON   -12.7851    45.6829     0   -3.40600
+GTSRCE  IF13D   LATLON   -12.7846    45.6840     0   -3.42300
+GTSRCE  IF14C   LATLON   -12.8182    45.7600     0   -3.52900
+GTSRCE  IF14D   LATLON   -12.8185    45.7601     0   -3.53000
+GTSRCE  IF15C   LATLON   -12.8130    45.4312     0   -1.82200
+GTSRCE  IF15D   LATLON   -12.8118    45.4304     0   -1.82100
+GTSRCE  IF16C   LATLON   -12.6610    45.5361     0   -2.75700
+GTSRCE  IF16D   LATLON   -12.6607    45.5352     0   -2.75300
+GTSRCE  IF17C   LATLON   -12.7015    45.5678     0   -3.10000
+GTSRCE  IF18C   LATLON   -12.9744    45.6415     0   -3.29800
+GTSRCE  IF18D   LATLON   -12.9743    45.6412     0   -3.29800
+GTSRCE  IF19D   LATLON   -12.8735    45.5667     0   -2.70900
+GTSRCE  IF1C    LATLON   -12.7722    45.4094     0   -1.69300
+GTSRCE  IF1D    LATLON   -12.7716    45.4078     0   -1.69000
+GTSRCE  IF2C    LATLON   -12.7114    45.3843     0   -1.21800
+GTSRCE  IF2D    LATLON   -12.7118    45.3814     0   -1.19600
+GTSRCE  IF3C    LATLON   -12.7022    45.4502     0   -1.93500
+GTSRCE  IF3D    LATLON   -12.7030    45.4484     0   -1.93200
+GTSRCE  IF5C    LATLON   -12.8790    45.4781     0   -2.28800
+GTSRCE  IF5D    LATLON   -12.8792    45.4775     0   -2.28700
+GTSRCE  IF6C    LATLON   -12.8909    45.3519     0   -1.73100
+GTSRCE  IF6D    LATLON   -12.8908    45.3525     0   -1.73400
+GTSRCE  IF7C    LATLON   -12.8724    45.6840     0   -3.35000
+GTSRCE  IF7D    LATLON   -12.8720    45.6819     0   -3.37100
+GTSRCE  IF9C    LATLON   -12.9223    45.7664     0   -3.37600
+GTSRCE  IF9D    LATLON   -12.9232    45.7658     0   -3.39400
+GTSRCE  MOCA    LATLON   -12.7837    45.4113     0   -1.68100
+GTSRCE  KNKL    LATLON   -12.9571    45.1042     0   0.02400 
+GTSRCE  MCHI    LATLON   -12.8329    45.1237     0   0.13000
+GTSRCE  MILA    LATLON   -12.8481    45.1928     0   0.03000
+GTSRCE  MTSB    LATLON   -12.6804    45.0847     0   0.05000
+GTSRCE  PMZI    LATLON   -12.7993    45.2743     0   0.01000
+GTSRCE  R0CC5   LATLON   -12.7557    45.2307     0   0.03400
+GTSRCE  R1EE2   LATLON   -12.8354    45.1365     0   0.11300
+GTSRCE  RAE55   LATLON   -12.7335    45.2036     0   0.04700
+GTSRCE  RCBF0   LATLON   -12.7984    45.2748     0   0.01100
+GTSRCE  YTMZ    LATLON   -12.7557    45.2307     0   0.03400
+"""
+
+# Read the data from the string, assuming spaces separate fields
+df = pd.read_csv(StringIO(data), delim_whitespace=True, header=None)
+
+# Drop columns 0 (first), 2 (third), and 5 (sixth)
+df = df.drop([0, 2, 5], axis=1)
+
+# Rename columns
+df.columns = ["Name", "Latitude", "Longitude", "Depth"]
+
+# Write DataFrame to CSV
+df.to_csv("station_location.csv", index=False)
