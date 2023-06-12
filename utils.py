@@ -7,7 +7,7 @@ import cartopy.feature as cfeature
 from datetime import datetime
 from time import sleep
 
-STATION_LOCATION_FILEPATH = 'data/station_location.csv'
+STATION_LOCATION_FILEPATH = "data/station_location.csv"
 
 
 def plot_feature_importance_bar_chart(model, features, file_name=None):
@@ -28,19 +28,24 @@ def plot_feature_importance_bar_chart(model, features, file_name=None):
     indices = np.argsort(model.feature_importances_)
 
     # Plot the feature importances
-    plt.figure(figsize=(12, 8))
-    plt.title('Feature Importances')
-    plt.barh(range(len(indices)), model.feature_importances_[indices], color='b', align='center')
+    plt.figure(figsize=(3, 5))
+    plt.title("Feature Importances")
+    plt.barh(
+        range(len(indices)),
+        model.feature_importances_[indices],
+        color="b",
+        align="center",
+    )
     plt.yticks(range(len(indices)), [features[i] for i in indices])
-    plt.xlabel('Relative Importance')
+    plt.xlabel("Relative Importance")
     # 保存图片
     if file_name is None:
         # 使用时间戳创建一个唯一的文件名
         file_name = f"map_data2D_{datetime.now().strftime('%Y%m%d_%H%M%S')}.png"
         sleep(1)
 
-    plt.savefig(file_name)
-    print(f"Figure saved as {file_name}")
+    plt.savefig(file_name, bbox_inches="tight")
+    # print(f"Figure saved as {file_name}")
     plt.show()
 
 
@@ -62,8 +67,12 @@ def plot_points(ax, data_sample, options, label_map):
     for option in options:
         option_color = label_map[option]["color"]
         plt.scatter(
-            data_sample[option+'_long'], data_sample[option+'_lat'],
-            s=5, alpha=0.5, color=option_color, label=label_map[option]["label"].capitalize()
+            data_sample[option + "_long"],
+            data_sample[option + "_lat"],
+            s=5,
+            alpha=0.5,
+            color=option_color,
+            label=label_map[option]["label"].capitalize(),
         )
 
 
@@ -84,15 +93,21 @@ def connect_points(ax, data_sample, options):
         if option == "ref" in options and "bias" in options:
             for index, row in data_sample.iterrows():
                 ax.plot(
-                    [row['bias_long'], row['ref_long']], [row['bias_lat'], row['ref_lat']],
-                    'k-', alpha=0.1, linewidth=0.5
+                    [row["bias_long"], row["ref_long"]],
+                    [row["bias_lat"], row["ref_lat"]],
+                    "k-",
+                    alpha=0.1,
+                    linewidth=0.5,
                 )
 
     if "ref" in options and "corr" in options:
         for index, row in data_sample.iterrows():
             ax.plot(
-                [row['corr_long'], row['ref_long']], [row['corr_lat'], row['ref_lat']],
-                'k-', alpha=0.1, linewidth=0.5
+                [row["corr_long"], row["ref_long"]],
+                [row["corr_lat"], row["ref_lat"]],
+                "k-",
+                alpha=0.1,
+                linewidth=0.5,
             )
 
 
@@ -132,9 +147,11 @@ def map_data2D(data_sample, options=["ref", "bias", "corr"], file_name=None):
         file_name : str
             生成图片的文件名，默认为时间戳+.png
     """
-    label_map = {"ref": {"color": "black", "label": "Reference"},
-                 "bias": {"color": "red", "label": "Biased"},
-                 "corr": {"color": "white", "label": "Corrected"}}
+    label_map = {
+        "ref": {"color": "black", "label": "Reference"},
+        "bias": {"color": "red", "label": "Biased"},
+        "corr": {"color": "white", "label": "Corrected"},
+    }
 
     # Constants for map extent
     LONG_MIN, LONG_MAX = 44.8, 46
@@ -148,20 +165,32 @@ def map_data2D(data_sample, options=["ref", "bias", "corr"], file_name=None):
     ax.add_feature(cfeature.LAND)
     ax.add_feature(cfeature.OCEAN)
     ax.add_feature(cfeature.COASTLINE)
-    ax.add_feature(cfeature.BORDERS, linestyle=':')
+    ax.add_feature(cfeature.BORDERS, linestyle=":")
 
     # Plot data sample
     plot_data_sample(ax, data_sample, options, label_map)
 
     def _plot_stations(stations, ax):
-        permanent_stations = stations[stations['Depth'] > 0]
-        temporary_stations = stations[stations['Depth'] < 0]
+        permanent_stations = stations[stations["Depth"] > 0]
+        temporary_stations = stations[stations["Depth"] < 0]
 
-        ax.scatter(permanent_stations['Longitude'], permanent_stations['Latitude'],
-                   s=50, color='green', marker='^', label='Permanent Station')
+        ax.scatter(
+            permanent_stations["Longitude"],
+            permanent_stations["Latitude"],
+            s=50,
+            color="green",
+            marker="^",
+            label="Permanent Station",
+        )
 
-        ax.scatter(temporary_stations['Longitude'], temporary_stations['Latitude'],
-                   s=50, color='yellow', marker='^', label='Temporary Station')
+        ax.scatter(
+            temporary_stations["Longitude"],
+            temporary_stations["Latitude"],
+            s=50,
+            color="yellow",
+            marker="^",
+            label="Temporary Station",
+        )
 
     stations = pd.read_csv(STATION_LOCATION_FILEPATH)
     _plot_stations(stations, ax)
@@ -170,8 +199,8 @@ def map_data2D(data_sample, options=["ref", "bias", "corr"], file_name=None):
     x_ticks = np.arange(LONG_MIN, LONG_MAX, X_TICKS_STEP)
     y_ticks = np.arange(LAT_MIN, LAT_MAX, Y_TICKS_STEP)
     ax.gridlines(xlocs=x_ticks, ylocs=y_ticks, draw_labels=True)
-    plt.xlabel('Longitude')
-    plt.ylabel('Latitude')
+    plt.xlabel("Longitude")
+    plt.ylabel("Latitude")
     plt.legend()
     # 保存图片
     if file_name is None:
@@ -181,7 +210,7 @@ def map_data2D(data_sample, options=["ref", "bias", "corr"], file_name=None):
 
     plt.savefig(file_name)
     print(f"Figure saved as {file_name}")
-    plt.show()
+    # plt.show()
 
 
 def map_data3D(data_sample, options=["ref", "bias", "corr"]):
@@ -194,21 +223,24 @@ def map_data3D(data_sample, options=["ref", "bias", "corr"]):
         options : list of str
             需要绘制的点的类型，可以是"ref","bias"或"corr"的组合。
     """
-    label_map = {"ref": {"color": "black", "label": "Reference"},
-                 "bias": {"color": "red", "label": "Biased"},
-                 "corr": {"color": "blue", "label": "Corrected"}}
+    label_map = {
+        "ref": {"color": "black", "label": "Reference"},
+        "bias": {"color": "red", "label": "Biased"},
+        "corr": {"color": "blue", "label": "Corrected"},
+    }
 
     fig = plt.figure(figsize=(10, 8))
-    ax = fig.add_subplot(111, projection='3d')
+    ax = fig.add_subplot(111, projection="3d")
 
     # Plot data sample
     plot_data_sample(ax, data_sample, options, label_map, is3D=True)
 
-    ax.set_xlabel('Longitude')
-    ax.set_ylabel('Latitude')
-    ax.set_zlabel('Depth')
+    ax.set_xlabel("Longitude")
+    ax.set_ylabel("Latitude")
+    ax.set_zlabel("Depth")
     ax.legend()
-    plt.show()
+    # plt.show()
+    plt.savefig("map_data3D.png")
 
 
 def plot_predictions(data, model, features, targets):
@@ -219,24 +251,42 @@ def plot_predictions(data, model, features, targets):
     test_data = data.drop(train_data.index)
 
     # Fit the model on the training data
-    model.fit(train_data[features], train_data[targets])
+    # model.fit(train_data[features], train_data[targets])
 
     predictions = model.predict(test_data[features])
     training = model.predict(train_data[features])
 
     plt.figure(figsize=(10, 8))
     for i in range(3):
-        plt.subplot(1, 3, i+1)
-        plt.scatter(data[features[i]], data[targets[i]],
-                    s=5, alpha=0.5, color='red', label='Biased')
-        plt.scatter(training[:, i], train_data[targets[i]],
-                    s=5, alpha=0.5, color='blue', label='Train')
-        plt.scatter(predictions[:, i], test_data[targets[i]],
-                    s=5, alpha=0.5, color='green', label='Test')
+        plt.subplot(1, 3, i + 1)
+        plt.scatter(
+            data[features[i]],
+            data[targets[i]],
+            s=5,
+            alpha=0.5,
+            color="red",
+            label="Biased",
+        )
+        plt.scatter(
+            training[:, i],
+            train_data[targets[i]],
+            s=5,
+            alpha=0.5,
+            color="blue",
+            label="Train",
+        )
+        plt.scatter(
+            predictions[:, i],
+            test_data[targets[i]],
+            s=5,
+            alpha=0.5,
+            color="green",
+            label="Test",
+        )
         feature_mean = test_data[features[i]].mean()
         plt.axline((feature_mean, feature_mean), slope=1)
-        plt.xlabel(f'{features[i]}')
-        plt.ylabel(f'{targets[i]}')
+        plt.xlabel(f"{features[i]}")
+        plt.ylabel(f"{targets[i]}")
         xmin = min(data[targets[i]].min(), predictions[:, i].min())
         xmax = max(data[targets[i]].max(), predictions[:, i].max())
         plt.xlim(left=xmin, right=xmax)
@@ -245,5 +295,4 @@ def plot_predictions(data, model, features, targets):
         plt.legend()
 
     plt.tight_layout()
-    plt.show()
-
+    plt.savefig("predictions.png")

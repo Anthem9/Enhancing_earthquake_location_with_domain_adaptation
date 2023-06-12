@@ -2,7 +2,7 @@ import pandas as pd
 from sklearn.exceptions import NotFittedError
 import logging
 
-from models import train_model
+from models import train_model, param_tuning
 from utils import map_data2D, plot_feature_importance_bar_chart, plot_predictions
 
 # 设置日志级别，以及日志消息的格式
@@ -71,31 +71,40 @@ def main():
     if data is None:
         return
 
-    logger.info("Starting model training.")
-    model = train_model(
-        data=data,
-        features=features,
-        targets=targets,
-        model_option=model_option
-    )
+    # logger.info("Starting model training.")
+    # model = train_model(
+    #     data=data,
+    #     features=features,
+    #     targets=targets,
+    #     model_option=model_option
+    # )
+    #
+    # score = model.score(data[features], data[targets])
+    # logger.info(f'R^2 score: {score:.2f}')
+    #
+    # logger.info("Starting model prediction.")
+    # result = make_predictions(model, data, features)
+    # if result is None:
+    #     return
 
-    score = model.score(data[features], data[targets])
-    logger.info(f'R^2 score: {score:.2f}')
-
-    logger.info("Starting model prediction.")
-    result = make_predictions(model, data, features)
-    if result is None:
-        return
-
-    data_sample = result.sample(sample_size)
+    # data_sample = result.sample(sample_size)
     # map_data2D(data_sample, options=["ref", "bias"])
     # map_data2D(data_sample, options=['ref'])
     # map_data2D(data_sample, options=['bias'])
-    map_data2D(data_sample, options=["ref", "corr"])
+    # map_data2D(data_sample, options=["ref", "corr"])
     #
     # logger.info("Plotting feature importance bar chart.")
     # plot_feature_importance_bar_chart(model, features)
     # plot_predictions(data, model, features, targets)
+
+    # 定义参数网格
+    param_grid = {
+        'n_estimators': [500, 1000, 1500, 2000],
+        'max_depth': [None, 10, 20, 30],
+        'min_samples_split': [2, 5, 10],
+        'min_samples_leaf': [1, 2, 4],
+    }
+    param_tuning(data, features, targets, param_grid)
 
 
 if __name__ == "__main__":
