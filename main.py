@@ -1,8 +1,10 @@
 import pandas as pd
 from sklearn.exceptions import NotFittedError
 import logging
+import numpy as np
 
 from models import train_model, param_tuning
+from sklearn.model_selection import cross_val_score
 from utils import map_data2D, plot_feature_importance_bar_chart, plot_predictions
 
 # 设置日志级别，以及日志消息的格式
@@ -81,12 +83,16 @@ def main():
     #
     # score = model.score(data[features], data[targets])
     # logger.info(f'R^2 score: {score:.2f}')
+    # scores = cross_val_score(model, data[features], data[targets], cv=5)
+    #
+    # logger.info(f'CV R^2 score: {np.mean(scores):.2f} (+/- {np.std(scores):.2f})')
+
     #
     # logger.info("Starting model prediction.")
     # result = make_predictions(model, data, features)
     # if result is None:
     #     return
-
+    #
     # data_sample = result.sample(sample_size)
     # map_data2D(data_sample, options=["ref", "bias"])
     # map_data2D(data_sample, options=['ref'])
@@ -98,11 +104,17 @@ def main():
     # plot_predictions(data, model, features, targets)
 
     # 定义参数网格
+    # param_grid = {
+    #     'n_estimators': [1400, 1500, 1600, 1700, 1800, 1900, 2000, 2100, 2200, 2400],
+    #     'max_depth': [None, 10, 20, 30, 40],
+    #     'min_samples_split': [2,],
+    #     'min_samples_leaf': [1,],
+    # }
     param_grid = {
-        'n_estimators': [500, 1000, 1500, 2000],
-        'max_depth': [None, 10, 20, 30],
-        'min_samples_split': [2, 5, 10],
-        'min_samples_leaf': [1, 2, 4],
+        'n_estimators': [2000],
+        'max_depth': [None,],
+        'min_samples_split': [2, 4, 6, 8],
+        'min_samples_leaf': [1, 2, 4, 8],
     }
     param_tuning(data, features, targets, param_grid)
 

@@ -21,7 +21,14 @@ def param_tuning(
         data, test_size=test_size, random_state=random_state
     )
     # 初始化 GridSearchCV
-    grid_search = GridSearchCV(RandomForestRegressor(), param_grid, cv=5)
+    grid_search = GridSearchCV(
+        RandomForestRegressor(),
+        param_grid,
+        scoring='r2',
+        cv=5,
+        verbose=2,
+        n_jobs=-1
+    )
 
     # 在训练集上训练
     grid_search.fit(train_data[features], train_data[targets])
@@ -42,6 +49,7 @@ def param_tuning(
     print()
     # 打印最优参数
     print(grid_search.best_params_)
+    print(grid_search.best_score_)
     return grid_search
 
 
@@ -85,10 +93,11 @@ def train_model(
     if model_option == "RF":
         # Create the random forest regression model
         model = RandomForestRegressor(
-            n_estimators=1800,
+            n_estimators=1600,
+            max_depth=30,
+            min_samples_leaf=1,
+            min_samples_split=2,
             random_state=random_state,
-            # min_samples_leaf=10,
-            # max_depth=20,
             **(rf_params or {})
         )
     elif model_option == "LR":
