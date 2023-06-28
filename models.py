@@ -93,8 +93,8 @@ def train_model(
     if model_option == "RF":
         # Create the random forest regression model
         model = RandomForestRegressor(
-            n_estimators=1600,
-            max_depth=30,
+            n_estimators=2000,
+            max_depth=None,
             min_samples_leaf=1,
             min_samples_split=2,
             random_state=random_state,

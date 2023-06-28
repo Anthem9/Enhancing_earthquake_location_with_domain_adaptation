@@ -73,35 +73,35 @@ def main():
     if data is None:
         return
 
-    # logger.info("Starting model training.")
-    # model = train_model(
-    #     data=data,
-    #     features=features,
-    #     targets=targets,
-    #     model_option=model_option
-    # )
-    #
-    # score = model.score(data[features], data[targets])
-    # logger.info(f'R^2 score: {score:.2f}')
-    # scores = cross_val_score(model, data[features], data[targets], cv=5)
-    #
-    # logger.info(f'CV R^2 score: {np.mean(scores):.2f} (+/- {np.std(scores):.2f})')
+    logger.info("Starting model training.")
+    model = train_model(
+        data=data,
+        features=features,
+        targets=targets,
+        model_option=model_option
+    )
 
-    #
-    # logger.info("Starting model prediction.")
-    # result = make_predictions(model, data, features)
-    # if result is None:
-    #     return
-    #
-    # data_sample = result.sample(sample_size)
-    # map_data2D(data_sample, options=["ref", "bias"])
-    # map_data2D(data_sample, options=['ref'])
-    # map_data2D(data_sample, options=['bias'])
-    # map_data2D(data_sample, options=["ref", "corr"])
-    #
-    # logger.info("Plotting feature importance bar chart.")
-    # plot_feature_importance_bar_chart(model, features)
-    # plot_predictions(data, model, features, targets)
+    score = model.score(data[features], data[targets])
+    logger.info(f'R^2 score: {score:.2f}')
+    scores = cross_val_score(model, data[features], data[targets], cv=5)
+
+    logger.info(f'CV R^2 score: {np.mean(scores):.2f} (+/- {np.std(scores):.2f})')
+
+
+    logger.info("Starting model prediction.")
+    result = make_predictions(model, data, features)
+    if result is None:
+        return
+
+    data_sample = result.sample(sample_size)
+    map_data2D(data_sample, options=["ref", "bias"])
+    map_data2D(data_sample, options=['ref'])
+    map_data2D(data_sample, options=['bias'])
+    map_data2D(data_sample, options=["ref", "corr"])
+
+    logger.info("Plotting feature importance bar chart.")
+    plot_feature_importance_bar_chart(model, features)
+    plot_predictions(data, model, features, targets)
 
     # 定义参数网格
     # param_grid = {
@@ -110,13 +110,13 @@ def main():
     #     'min_samples_split': [2,],
     #     'min_samples_leaf': [1,],
     # }
-    param_grid = {
-        'n_estimators': [2000],
-        'max_depth': [None,],
-        'min_samples_split': [2, 4, 6, 8],
-        'min_samples_leaf': [1, 2, 4, 8],
-    }
-    param_tuning(data, features, targets, param_grid)
+    # param_grid = {
+    #     'n_estimators': [2000],
+    #     'max_depth': [None,],
+    #     'min_samples_split': [2, 4, 6, 8],
+    #     'min_samples_leaf': [1, 2, 4, 8],
+    # }
+    # param_tuning(data, features, targets, param_grid)
 
 
 if __name__ == "__main__":
